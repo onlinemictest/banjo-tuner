@@ -24,7 +24,7 @@ import { closestBy, flat, queue } from "./array-fns";
 import { fromEntries, isTruthy, once, set, throttle, timeout } from "./helper-fns";
 import { clamp, round } from "./math-fns";
 
-console.log('Licensed under AGPL-3.0: https://github.com/onlinemictest/ukulele-tuner')
+console.log('Licensed under AGPL-3.0: https://github.com/onlinemictest/banjo-tuner')
 
 const BUFFER_SIZE = 8192; // byte
 const INTERVAL_TIME = 185; // ms
@@ -40,12 +40,11 @@ const NOTES = flat([1, 2, 3, 4, 5, 6, 7, 8].map(o => NOTE_STRINGS.map(n => `${n}
 type Note_Octave = `${NoteString}_${number}`;
 
 const TUNINGS = {
-  'gCEA': ['G_4', 'C_4', 'E_4', 'A_4'] as Note_Octave[],
-  'GCEA': ['G_3', 'C_4', 'E_4', 'A_4'] as Note_Octave[],
-  'DGBE': ['D_3', 'G_3', 'B_3', 'E_4'] as Note_Octave[],
+  'gDGBD': ['G_4', 'D_3', 'G_3', 'B_4', 'D_4'] as Note_Octave[],
+  'gCGCD': ['G_4', 'C_3', 'G_3', 'C_4', 'D_4'] as Note_Octave[],
 } 
 
-let tuning: keyof typeof TUNINGS = 'gCEA';
+let tuning: keyof typeof TUNINGS = 'gDGBD';
 let hardReset = false;
 
 const TUNINGS_FREQ = fromEntries(
@@ -111,7 +110,7 @@ const getSVGElementById = (id: string) => document.getElementById(id) as unknown
 
 // @ts-expect-error
 Aubio().then(({ Pitch }) => {
-  const ukuleleTuner = document.getElementById('ukulele-tuner') as HTMLDivElement | null;
+  const banjoTuner = document.getElementById('banjo-tuner') as HTMLDivElement | null;
   const startEl = document.getElementById('audio-start') as HTMLButtonElement | null;
   const pauseEl = document.getElementById('audio-pause') as HTMLButtonElement | null;
   const tuneUpText = document.getElementById('tune-up-text') as HTMLDivElement | null;
@@ -143,7 +142,7 @@ Aubio().then(({ Pitch }) => {
   Object.values(noteElGroups).slice(1).forEach(v => { v.style.display = 'none' })
 
   if (false
-    || !ukuleleTuner || !startEl || !pauseEl || !tuneUpText || !tuneDownText || !pressPlay || !pluckAString
+    || !banjoTuner || !startEl || !pauseEl || !tuneUpText || !tuneDownText || !pressPlay || !pluckAString
     || !allTunedUp || !errorEl || !noteSpan || !matchCircleL || !matchCircleR || !innerCircle || !selectTuning
     || !tunedJingle || !Object.values(noteElGroups).every(isTruthy)
     || !Object.values(noteEls).every(a => Object.values(a).every(isTruthy))
@@ -210,7 +209,7 @@ Aubio().then(({ Pitch }) => {
   });
 
   startEl.addEventListener('click', async () => {
-    ukuleleTuner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    banjoTuner.scrollIntoView({ behavior: 'smooth', block: 'center' });
     startEl.style.display = 'none';
     pauseEl.style.display = 'block';
     shrinkAnimation(pauseEl);
@@ -319,12 +318,12 @@ Aubio().then(({ Pitch }) => {
             resetable = true;
             softResettable = true;
 
-            const ukuleleNoteName = currNote;
+            const banjoNoteName = currNote;
 
-            const refFreq = TUNINGS_FREQ[tuning][ukuleleNoteName];
+            const refFreq = TUNINGS_FREQ[tuning][banjoNoteName];
             const isTooLow = frequency < refFreq;
 
-            const baseCents = noteName === ukuleleNoteName
+            const baseCents = noteName === banjoNoteName
               ? note.cents
               : isTooLow ? -50 : 50;
 
@@ -332,20 +331,20 @@ Aubio().then(({ Pitch }) => {
             const sensitivity = Math.min(10, Math.round(100 / absCents100));
             const centsRounded = round(baseCents, sensitivity);
 
-            const centsBuffer = centsBufferMap.get(ukuleleNoteName) ?? [];
-            const jinglePlayed = jinglePlayedMap.get(ukuleleNoteName) ?? false;
-            if (noteName === ukuleleNoteName && centsRounded === 0) centsBuffer.push(0);
+            const centsBuffer = centsBufferMap.get(banjoNoteName) ?? [];
+            const jinglePlayed = jinglePlayedMap.get(banjoNoteName) ?? false;
+            if (noteName === banjoNoteName && centsRounded === 0) centsBuffer.push(0);
 
             const tuneRatio = clamp(centsBuffer.length / TUNE_BUFFER_SIZE);
 
             const centsUI = centsRounded * (1 - tuneRatio);
 
-            const isClose = noteName === ukuleleNoteName && centsUI === 0;
+            const isClose = noteName === banjoNoteName && centsUI === 0;
             updateTuneText(isClose, isTooLow);
 
             pluckAString.style.opacity = '0';
             noteSpan.style.opacity = '1';
-            const currNoteString = ukuleleNoteName.split('_')[0] as NoteString;
+            const currNoteString = banjoNoteName.split('_')[0] as NoteString;
             if (prevNoteString !== currNoteString) noteSpan.innerText = currNoteString
             prevNoteString = currNoteString;
 
@@ -359,9 +358,9 @@ Aubio().then(({ Pitch }) => {
             matchCircleL.style.transform = `${translate.Y}(${-centsUI}%)`;
 
             if (tuneRatio === 1 && !jinglePlayed) {
-              set(noteEls[tuning][ukuleleNoteName]?.querySelector('path')?.style, 'fill', 'rgb(67,111,142)');
-              set(fillEls[noteNameToIndex(TUNINGS[tuning], ukuleleNoteName)]?.style, 'display', 'block');
-              jinglePlayedMap.set(ukuleleNoteName, true);
+              set(noteEls[tuning][banjoNoteName]?.querySelector('path')?.style, 'fill', 'rgb(67,111,142)');
+              set(fillEls[noteNameToIndex(TUNINGS[tuning], banjoNoteName)]?.style, 'display', 'block');
+              jinglePlayedMap.set(banjoNoteName, true);
 
               // give animation time to finish
               timeout(ANIM_DURATION).then(() => {
@@ -371,7 +370,7 @@ Aubio().then(({ Pitch }) => {
                 if (fillEls.every(el => el.style.display === 'block') && !victory) {
                   victory = true;
                   victoryPause = true;
-                  ukuleleTuner.classList.add('all-tuned-up');
+                  banjoTuner.classList.add('all-tuned-up');
                   noteSpan.style.opacity = '0';
                   allTunedUp.style.opacity = '1';
                   toggleClass(allTunedUp, 'explode');
@@ -385,7 +384,7 @@ Aubio().then(({ Pitch }) => {
 
                   timeout(VICTORY_DURATION).then(() => {
                     victoryPause = false;
-                    ukuleleTuner.classList.remove('all-tuned-up');
+                    banjoTuner.classList.remove('all-tuned-up');
                     allTunedUp.style.opacity = '0';
                   });
                 }
