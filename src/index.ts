@@ -35,11 +35,11 @@ const NOTE_BUFFER_SIZE = 15;
 const TUNE_BUFFER_SIZE = 5;
 
 const TUNINGS = {
-  'gDGBD': ['G_4', 'D_3', 'G_3', 'B_4', 'D_4'] as Note_Octave[],
+  'gDGBD': ['G_4', 'D_3', 'G_3', 'B_3', 'D_4'] as Note_Octave[],
   'gCGCD': ['G_4', 'C_3', 'G_3', 'C_4', 'D_4'] as Note_Octave[],
   'gDGCD': ['G_4', 'D_3', 'G_3', 'C_4', 'D_4'] as Note_Octave[],
-  'gCGBD': ['G_4', 'C_3', 'G_3', 'B_4', 'D_4'] as Note_Octave[],
-  'fDFAD': ['F#_4', 'D_3', 'F#_3', 'A_4', 'D_4'] as Note_Octave[],
+  'gCGBD': ['G_4', 'C_3', 'G_3', 'B_3', 'D_4'] as Note_Octave[],
+  'fDFAD': ['F#_4', 'D_3', 'F#_3', 'A_3', 'D_4'] as Note_Octave[],
 } 
 
 let tuning: keyof typeof TUNINGS = 'gDGBD';
