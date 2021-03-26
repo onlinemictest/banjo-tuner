@@ -42,6 +42,9 @@ type Note_Octave = `${NoteString}_${number}`;
 const TUNINGS = {
   'gDGBD': ['G_4', 'D_3', 'G_3', 'B_4', 'D_4'] as Note_Octave[],
   'gCGCD': ['G_4', 'C_3', 'G_3', 'C_4', 'D_4'] as Note_Octave[],
+  'gDGCD': ['G_4', 'D_3', 'G_3', 'C_4', 'D_4'] as Note_Octave[],
+  'gCGBD': ['G_4', 'C_3', 'G_3', 'B_4', 'D_4'] as Note_Octave[],
+  'fDFAD': ['F#_4', 'D_3', 'F#_3', 'A_4', 'D_4'] as Note_Octave[],
 } 
 
 let tuning: keyof typeof TUNINGS = 'gDGBD';
@@ -137,7 +140,7 @@ Aubio().then(({ Pitch }) => {
       getSVGElementById(`${tuning}-S${i + 1}`),
     ])),
   ]));
-  const fillEls = [1, 2, 3, 4].map(n => getSVGElementById(`S${n}-fill`));
+  const fillEls = [1, 2, 3, 4, 5].map(n => getSVGElementById(`S${n}-fill`));
 
   if (false
     || !banjoTuner || !startEl || !pauseEl || !tuneUpText || !tuneDownText || !pressPlay || !pluckAString
