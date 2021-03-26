@@ -139,8 +139,6 @@ Aubio().then(({ Pitch }) => {
   ]));
   const fillEls = [1, 2, 3, 4].map(n => getSVGElementById(`S${n}-fill`));
 
-  Object.values(noteElGroups).slice(1).forEach(v => { v.style.display = 'none' })
-
   if (false
     || !banjoTuner || !startEl || !pauseEl || !tuneUpText || !tuneDownText || !pressPlay || !pluckAString
     || !allTunedUp || !errorEl || !noteSpan || !matchCircleL || !matchCircleR || !innerCircle || !selectTuning
@@ -168,6 +166,7 @@ Aubio().then(({ Pitch }) => {
   let stream: MediaStream;
   let intervalId: number;
 
+  noteElGroups[tuning].style.display = 'block';
   matchCircleL.style.transform = `${translate.Y}(125%)`;
 
   const pauseCallback = () => {
